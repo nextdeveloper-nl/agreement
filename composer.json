@@ -1,0 +1,57 @@
+{
+  "name": "nextdeveloper/agreement",
+  "description": "NextDeveloper Generator Package",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Harun Barış Bulut",
+      "email": "baris.bulut@plusclouds.com"
+    },
+    {
+      "name": "IBRAHIM KHALIL",
+      "email": "ibrahim.yakoub@plusclouds.com"
+    }
+  ],
+  "homepage": "https://github.com/nextdeveloper-nl/agreement",
+  "support": {
+    "issues": "https://github.com/nextdeveloper-nl/agreement/issues",
+    "source": "https://github.com/nextdeveloper-nl/agreement"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:nextdeveloper-nl/agreement.git"
+    }
+  ],
+  "require": {
+    "php": ">=8.2.0",
+    "league/fractal": "*",
+    "monolog/monolog": "*",
+    "pear/net_dns2": "*"
+  },
+  "require-dev": {
+    "illuminate/support": "5.5.*",
+    "illuminate/database": "5.5.*",
+    "illuminate/validation": "5.5.*",
+    "guzzlehttp/guzzle": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "NextDeveloper\\Agreement\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NextDeveloper\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "NextDeveloper\\Agreement\\AgreementServiceProvider"
+      ]
+    }
+  },
+  "suggest": {}
+}
