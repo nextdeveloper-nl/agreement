@@ -10,13 +10,23 @@ use NextDeveloper\Commons\Database\Filters\AbstractQueryFilter;
  * This class automatically puts where clause on database so that use can filter
  * data returned from the query.
  */
-class TemplatesQueryFilter extends AbstractQueryFilter
+class ContractsQueryFilter extends AbstractQueryFilter
 {
 
     /**
      * @var Builder
      */
     protected $builder;
+    
+    public function reference($value)
+    {
+        return $this->builder->where('reference', 'like', '%' . $value . '%');
+    }
+    
+    public function templateReference($value)
+    {
+        return $this->builder->where('template_reference', 'like', '%' . $value . '%');
+    }
     
     public function name($value)
     {
@@ -28,9 +38,18 @@ class TemplatesQueryFilter extends AbstractQueryFilter
         return $this->builder->where('description', 'like', '%' . $value . '%');
     }
     
-    public function reference($value)
+    public function objectType($value)
     {
-        return $this->builder->where('reference', 'like', '%' . $value . '%');
+        return $this->builder->where('object_type', 'like', '%' . $value . '%');
+    }
+
+    public function isSigned($value)
+    {
+        if(!is_bool($value)) {
+            $value = false;
+        }
+
+        return $this->builder->where('is_signed', $value);
     }
 
     public function createdAtStart($date)
@@ -82,11 +101,6 @@ class TemplatesQueryFilter extends AbstractQueryFilter
     }
 
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
-
-
-
-
-
 
 
 

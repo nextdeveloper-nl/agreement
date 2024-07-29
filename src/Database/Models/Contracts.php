@@ -6,27 +6,32 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use NextDeveloper\Commons\Database\Traits\Filterable;
-use NextDeveloper\Agreement\Database\Observers\TemplatesObserver;
+use NextDeveloper\Agreement\Database\Observers\ContractsObserver;
 use NextDeveloper\Commons\Database\Traits\UuidId;
 use NextDeveloper\Commons\Common\Cache\Traits\CleanCache;
 use NextDeveloper\Commons\Database\Traits\Taggable;
 
 /**
- * Templates model.
+ * Contracts model.
  *
  * @package  NextDeveloper\Agreement\Database\Models
  * @property integer $id
  * @property string $uuid
+ * @property string $reference
+ * @property string $template_reference
  * @property string $name
  * @property string $description
- * @property string $reference
+ * @property string $object_type
+ * @property integer $object_id
+ * @property boolean $is_signed
+ * @property $data
  * @property integer $iam_user_id
  * @property integer $iam_account_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
  */
-class Templates extends Model
+class Contracts extends Model
 {
     use Filterable, UuidId, CleanCache, Taggable;
     use SoftDeletes;
@@ -34,7 +39,7 @@ class Templates extends Model
 
     public $timestamps = true;
 
-    protected $table = 'agreement_templates';
+    protected $table = 'agreement_contracts';
 
 
     /**
@@ -43,9 +48,14 @@ class Templates extends Model
     protected $guarded = [];
 
     protected $fillable = [
+            'reference',
+            'template_reference',
             'name',
             'description',
-            'reference',
+            'object_type',
+            'object_id',
+            'is_signed',
+            'data',
             'iam_user_id',
             'iam_account_id',
     ];
@@ -71,9 +81,14 @@ class Templates extends Model
      */
     protected $casts = [
     'id' => 'integer',
+    'reference' => 'string',
+    'template_reference' => 'string',
     'name' => 'string',
     'description' => 'string',
-    'reference' => 'string',
+    'object_type' => 'string',
+    'object_id' => 'integer',
+    'is_signed' => 'boolean',
+    'data' => 'array',
     'created_at' => 'datetime',
     'updated_at' => 'datetime',
     'deleted_at' => 'datetime',
@@ -110,7 +125,7 @@ class Templates extends Model
         parent::boot();
 
         //  We create and add Observer even if we wont use it.
-        //parent::observe(TemplatesObserver::class);
+        //parent::observe(ContractsObserver::class);
 
         self::registerScopes();
     }
@@ -118,7 +133,7 @@ class Templates extends Model
     public static function registerScopes()
     {
         $globalScopes = config('agreement.scopes.global');
-        $modelScopes = config('agreement.scopes.agreement_templates');
+        $modelScopes = config('agreement.scopes.agreement_contracts');
 
         if(!$modelScopes) { $modelScopes = [];
         }
@@ -138,11 +153,6 @@ class Templates extends Model
     }
 
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
-
-
-
-
-
 
 
 

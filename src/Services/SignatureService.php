@@ -30,4 +30,23 @@ class SignatureService
         return $this->client->getAgreement($agreementId);
     }
 
+    public function createDocument(string $documentName, $templateId = null)
+    {
+
+        $templateId = $templateId ?? config('agreement.defaults.template_id');
+
+        return $this->client->createDocumentFromTemplate($templateId, $documentName);
+    }
+
+    public function fillDocumentWithData($documentId, $data)
+    {
+        return $this->client->fillDocumentWithData($documentId, $data);
+    }
+
+    public function downloadDocument($documentId)
+    {
+        return $this->client->downloadDocumentById($documentId);
+    }
+
+
 }

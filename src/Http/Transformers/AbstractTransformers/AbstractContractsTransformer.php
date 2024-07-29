@@ -20,16 +20,16 @@ use NextDeveloper\Commons\Http\Transformers\MetaTransformer;
 use NextDeveloper\Commons\Http\Transformers\VotesTransformer;
 use NextDeveloper\Commons\Http\Transformers\AddressesTransformer;
 use NextDeveloper\Commons\Http\Transformers\PhoneNumbersTransformer;
-use NextDeveloper\Agreement\Database\Models\Templates;
+use NextDeveloper\Agreement\Database\Models\Contracts;
 use NextDeveloper\Commons\Http\Transformers\AbstractTransformer;
 use NextDeveloper\IAM\Database\Scopes\AuthorizationScope;
 
 /**
- * Class TemplatesTransformer. This class is being used to manipulate the data we are serving to the customer
+ * Class ContractsTransformer. This class is being used to manipulate the data we are serving to the customer
  *
  * @package NextDeveloper\Agreement\Http\Transformers
  */
-class AbstractTemplatesTransformer extends AbstractTransformer
+class AbstractContractsTransformer extends AbstractTransformer
 {
 
     /**
@@ -48,11 +48,11 @@ class AbstractTemplatesTransformer extends AbstractTransformer
     ];
 
     /**
-     * @param Templates $model
+     * @param Contracts $model
      *
      * @return array
      */
-    public function transform(Templates $model)
+    public function transform(Contracts $model)
     {
                                                 $iamUserId = \NextDeveloper\IAM\Database\Models\Users::where('id', $model->iam_user_id)->first();
                                                             $iamAccountId = \NextDeveloper\IAM\Database\Models\Accounts::where('id', $model->iam_account_id)->first();
@@ -60,9 +60,14 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->buildPayload(
             [
             'id'  =>  $model->uuid,
+            'reference'  =>  $model->reference,
+            'template_reference'  =>  $model->template_reference,
             'name'  =>  $model->name,
             'description'  =>  $model->description,
-            'reference'  =>  $model->reference,
+            'object_type'  =>  $model->object_type,
+            'object_id'  =>  $model->object_id,
+            'is_signed'  =>  $model->is_signed,
+            'data'  =>  $model->data,
             'iam_user_id'  =>  $iamUserId ? $iamUserId->uuid : null,
             'iam_account_id'  =>  $iamAccountId ? $iamAccountId->uuid : null,
             'created_at'  =>  $model->created_at,
@@ -72,7 +77,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         );
     }
 
-    public function includeStates(Templates $model)
+    public function includeStates(Contracts $model)
     {
         $states = States::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -81,7 +86,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($states, new StatesTransformer());
     }
 
-    public function includeActions(Templates $model)
+    public function includeActions(Contracts $model)
     {
         $input = get_class($model);
         $input = str_replace('\\Database\\Models', '', $input);
@@ -93,7 +98,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($actions, new AvailableActionsTransformer());
     }
 
-    public function includeMedia(Templates $model)
+    public function includeMedia(Contracts $model)
     {
         $media = Media::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -102,7 +107,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($media, new MediaTransformer());
     }
 
-    public function includeSocialMedia(Templates $model)
+    public function includeSocialMedia(Contracts $model)
     {
         $socialMedia = SocialMedia::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -111,7 +116,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($socialMedia, new SocialMediaTransformer());
     }
 
-    public function includeComments(Templates $model)
+    public function includeComments(Contracts $model)
     {
         $comments = Comments::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -120,7 +125,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($comments, new CommentsTransformer());
     }
 
-    public function includeVotes(Templates $model)
+    public function includeVotes(Contracts $model)
     {
         $votes = Votes::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -129,7 +134,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($votes, new VotesTransformer());
     }
 
-    public function includeMeta(Templates $model)
+    public function includeMeta(Contracts $model)
     {
         $meta = Meta::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -138,7 +143,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($meta, new MetaTransformer());
     }
 
-    public function includePhoneNumbers(Templates $model)
+    public function includePhoneNumbers(Contracts $model)
     {
         $phoneNumbers = PhoneNumbers::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -147,7 +152,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($phoneNumbers, new PhoneNumbersTransformer());
     }
 
-    public function includeAddresses(Templates $model)
+    public function includeAddresses(Contracts $model)
     {
         $addresses = Addresses::where('object_type', get_class($model))
             ->where('object_id', $model->id)
@@ -156,11 +161,6 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($addresses, new AddressesTransformer());
     }
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
-
-
-
-
-
 
 
 

@@ -10,22 +10,22 @@ use NextDeveloper\IAM\Helpers\UserHelper;
 use NextDeveloper\Commons\Common\Cache\CacheHelper;
 use NextDeveloper\Commons\Helpers\DatabaseHelper;
 use NextDeveloper\Commons\Database\Models\AvailableActions;
-use NextDeveloper\Agreement\Database\Models\Templates;
-use NextDeveloper\Agreement\Database\Filters\TemplatesQueryFilter;
+use NextDeveloper\Agreement\Database\Models\Webhooks;
+use NextDeveloper\Agreement\Database\Filters\WebhooksQueryFilter;
 use NextDeveloper\Commons\Exceptions\ModelNotFoundException;
 use NextDeveloper\Events\Services\Events;
 use NextDeveloper\Commons\Exceptions\NotAllowedException;
 
 /**
- * This class is responsible from managing the data for Templates
+ * This class is responsible from managing the data for Webhooks
  *
- * Class TemplatesService.
+ * Class WebhooksService.
  *
  * @package NextDeveloper\Agreement\Database\Models
  */
-class AbstractTemplatesService
+class AbstractWebhooksService
 {
-    public static function get(TemplatesQueryFilter $filter = null, array $params = []) : Collection|LengthAwarePaginator
+    public static function get(WebhooksQueryFilter $filter = null, array $params = []) : Collection|LengthAwarePaginator
     {
         $enablePaginate = array_key_exists('paginate', $params);
 
@@ -38,7 +38,7 @@ class AbstractTemplatesService
         * Please let me know if you have any other idea about this; baris.bulut@nextdeveloper.com
         */
         if($filter == null) {
-            $filter = new TemplatesQueryFilter($request);
+            $filter = new WebhooksQueryFilter($request);
         }
 
         $perPage = config('commons.pagination.per_page');
@@ -59,7 +59,7 @@ class AbstractTemplatesService
             $filter->orderBy($params['orderBy']);
         }
 
-        $model = Templates::filter($filter);
+        $model = Webhooks::filter($filter);
 
         if($enablePaginate) {
             //  We are using this because we have been experiencing huge security problem when we use the paginate method.
@@ -77,7 +77,7 @@ class AbstractTemplatesService
 
     public static function getAll()
     {
-        return Templates::all();
+        return Webhooks::all();
     }
 
     /**
@@ -86,14 +86,14 @@ class AbstractTemplatesService
      * @param  $ref
      * @return mixed
      */
-    public static function getByRef($ref) : ?Templates
+    public static function getByRef($ref) : ?Webhooks
     {
-        return Templates::findByRef($ref);
+        return Webhooks::findByRef($ref);
     }
 
     public static function getActions()
     {
-        $model = Templates::class;
+        $model = Webhooks::class;
 
         $model = Str::remove('Database\\Models\\', $model);
 
@@ -106,9 +106,9 @@ class AbstractTemplatesService
     /**
      * This method initiates the related action with the given parameters.
      */
-    public static function  doAction($objectId, $action, ...$params)
+    public static function doAction($objectId, $action, ...$params)
     {
-        $object = Templates::where('uuid', $objectId)->first();
+        $object = Webhooks::where('uuid', $objectId)->first();
 
         $action = AvailableActions::where('name', $action)->first();
         $class = $action->class;
@@ -127,11 +127,11 @@ class AbstractTemplatesService
      * This method returns the model by lookint at its id
      *
      * @param  $id
-     * @return Templates|null
+     * @return Webhooks|null
      */
-    public static function getById($id) : ?Templates
+    public static function getById($id) : ?Webhooks
     {
-        return Templates::where('id', $id)->first();
+        return Webhooks::where('id', $id)->first();
     }
 
     /**
@@ -145,7 +145,7 @@ class AbstractTemplatesService
     public static function relatedObjects($uuid, $object)
     {
         try {
-            $obj = Templates::where('uuid', $uuid)->first();
+            $obj = Webhooks::where('uuid', $uuid)->first();
 
             if(!$obj) {
                 throw new ModelNotFoundException('Cannot find the related model');
@@ -170,34 +170,14 @@ class AbstractTemplatesService
      */
     public static function create(array $data)
     {
-        if (array_key_exists('iam_user_id', $data)) {
-            $data['iam_user_id'] = DatabaseHelper::uuidToId(
-                '\NextDeveloper\IAM\Database\Models\Users',
-                $data['iam_user_id']
-            );
-        }
-
-        if(!array_key_exists('iam_user_id', $data)) {
-            $data['iam_user_id']    = UserHelper::me()->id;
-        }
-        if (array_key_exists('iam_account_id', $data)) {
-            $data['iam_account_id'] = DatabaseHelper::uuidToId(
-                '\NextDeveloper\IAM\Database\Models\Accounts',
-                $data['iam_account_id']
-            );
-        }
-
-        if(!array_key_exists('iam_account_id', $data)) {
-            $data['iam_account_id'] = UserHelper::currentAccount()->id;
-        }
-
+        
         try {
-            $model = Templates::create($data);
+            $model = Webhooks::create($data);
         } catch(\Exception $e) {
             throw $e;
         }
 
-        Events::fire('created:NextDeveloper\Agreement\Templates', $model);
+        Events::fire('created:NextDeveloper\Agreement\Webhooks', $model);
 
         return $model->fresh();
     }
@@ -206,9 +186,9 @@ class AbstractTemplatesService
      * This function expects the ID inside the object.
      *
      * @param  array $data
-     * @return Templates
+     * @return Webhooks
      */
-    public static function updateRaw(array $data) : ?Templates
+    public static function updateRaw(array $data) : ?Webhooks
     {
         if(array_key_exists('id', $data)) {
             return self::update($data['id'], $data);
@@ -229,7 +209,7 @@ class AbstractTemplatesService
      */
     public static function update($id, array $data)
     {
-        $model = Templates::where('uuid', $id)->first();
+        $model = Webhooks::where('uuid', $id)->first();
 
         if(!$model) {
             throw new NotAllowedException(
@@ -238,20 +218,8 @@ class AbstractTemplatesService
             );
         }
 
-        if (array_key_exists('iam_user_id', $data)) {
-            $data['iam_user_id'] = DatabaseHelper::uuidToId(
-                '\NextDeveloper\IAM\Database\Models\Users',
-                $data['iam_user_id']
-            );
-        }
-        if (array_key_exists('iam_account_id', $data)) {
-            $data['iam_account_id'] = DatabaseHelper::uuidToId(
-                '\NextDeveloper\IAM\Database\Models\Accounts',
-                $data['iam_account_id']
-            );
-        }
-
-        Events::fire('updating:NextDeveloper\Agreement\Templates', $model);
+        
+        Events::fire('updating:NextDeveloper\Agreement\Webhooks', $model);
 
         try {
             $isUpdated = $model->update($data);
@@ -260,7 +228,7 @@ class AbstractTemplatesService
             throw $e;
         }
 
-        Events::fire('updated:NextDeveloper\Agreement\Templates', $model);
+        Events::fire('updated:NextDeveloper\Agreement\Webhooks', $model);
 
         return $model->fresh();
     }
@@ -277,7 +245,7 @@ class AbstractTemplatesService
      */
     public static function delete($id)
     {
-        $model = Templates::where('uuid', $id)->first();
+        $model = Webhooks::where('uuid', $id)->first();
 
         if(!$model) {
             throw new NotAllowedException(
@@ -286,7 +254,7 @@ class AbstractTemplatesService
             );
         }
 
-        Events::fire('deleted:NextDeveloper\Agreement\Templates', $model);
+        Events::fire('deleted:NextDeveloper\Agreement\Webhooks', $model);
 
         try {
             $model = $model->delete();

@@ -3,7 +3,10 @@
 return [
 
     'defaults' => [
-        'service' => 'inspakt'
+        'service' => 'inspakt',
+        'template_id' => env('AGREEMENT_TEMPLATE_ID'),
+        'document_name' => env('AGREEMENT_DOCUMENT_NAME', 'User Agreement'),
+        'channel' => env('AGREEMENT_CHANNEL', 'SMS'),
     ],
 
     'services' => [
