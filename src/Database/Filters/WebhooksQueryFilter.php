@@ -17,17 +17,15 @@ class WebhooksQueryFilter extends AbstractQueryFilter
      * @var Builder
      */
     protected $builder;
-    
+
     public function source($value)
     {
-        return $this->builder->where('source', 'like', '%' . $value . '%');
+        return $this->builder->where('source', 'ilike', '%' . $value . '%');
     }
 
     public function isProcessed($value)
     {
-        if(!is_bool($value)) {
-            $value = false;
-        }
+
 
         return $this->builder->where('is_processed', $value);
     }

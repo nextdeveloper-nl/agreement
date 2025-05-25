@@ -4,7 +4,7 @@ namespace NextDeveloper\Agreement\Database\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use NextDeveloper\Commons\Database\Filters\AbstractQueryFilter;
-        
+
 
 /**
  * This class automatically puts where clause on database so that use can filter
@@ -17,37 +17,35 @@ class ContractsQueryFilter extends AbstractQueryFilter
      * @var Builder
      */
     protected $builder;
-    
+
     public function reference($value)
     {
-        return $this->builder->where('reference', 'like', '%' . $value . '%');
+        return $this->builder->where('reference', 'ilike', '%' . $value . '%');
     }
-    
+
     public function templateReference($value)
     {
-        return $this->builder->where('template_reference', 'like', '%' . $value . '%');
+        return $this->builder->where('template_reference', 'ilike', '%' . $value . '%');
     }
-    
+
     public function name($value)
     {
-        return $this->builder->where('name', 'like', '%' . $value . '%');
+        return $this->builder->where('name', 'ilike', '%' . $value . '%');
     }
-    
+
     public function description($value)
     {
-        return $this->builder->where('description', 'like', '%' . $value . '%');
+        return $this->builder->where('description', 'ilike', '%' . $value . '%');
     }
-    
+
     public function objectType($value)
     {
-        return $this->builder->where('object_type', 'like', '%' . $value . '%');
+        return $this->builder->where('object_type', 'ilike', '%' . $value . '%');
     }
 
     public function isSigned($value)
     {
-        if(!is_bool($value)) {
-            $value = false;
-        }
+
 
         return $this->builder->where('is_signed', $value);
     }

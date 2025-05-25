@@ -4,7 +4,7 @@ namespace NextDeveloper\Agreement\Database\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use NextDeveloper\Commons\Database\Filters\AbstractQueryFilter;
-        
+
 
 /**
  * This class automatically puts where clause on database so that use can filter
@@ -17,20 +17,20 @@ class TemplatesQueryFilter extends AbstractQueryFilter
      * @var Builder
      */
     protected $builder;
-    
+
     public function name($value)
     {
-        return $this->builder->where('name', 'like', '%' . $value . '%');
+        return $this->builder->where('name', 'ilike', '%' . $value . '%');
     }
-    
+
     public function description($value)
     {
-        return $this->builder->where('description', 'like', '%' . $value . '%');
+        return $this->builder->where('description', 'ilike', '%' . $value . '%');
     }
-    
+
     public function reference($value)
     {
-        return $this->builder->where('reference', 'like', '%' . $value . '%');
+        return $this->builder->where('reference', 'ilike', '%' . $value . '%');
     }
 
     public function createdAtStart($date)
