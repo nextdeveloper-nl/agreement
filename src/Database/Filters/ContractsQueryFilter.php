@@ -4,7 +4,8 @@ namespace NextDeveloper\Agreement\Database\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use NextDeveloper\Commons\Database\Filters\AbstractQueryFilter;
-        
+use NextDeveloper\IAM\Database\Scopes\AuthorizationScope;
+
 
 /**
  * This class automatically puts where clause on database so that use can filter
@@ -17,58 +18,58 @@ class ContractsQueryFilter extends AbstractQueryFilter
      * @var Builder
      */
     protected $builder;
-    
+
     public function reference($value)
     {
         return $this->builder->where('reference', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function templateReference($value)
     {
         return $this->builder->where('template_reference', 'ilike', '%' . $value . '%');
     }
 
-        //  This is an alias function of templateReference
+    //  This is an alias function of templateReference
     public function template_reference($value)
     {
         return $this->templateReference($value);
     }
-        
+
     public function name($value)
     {
         return $this->builder->where('name', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function description($value)
     {
         return $this->builder->where('description', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function objectType($value)
     {
         return $this->builder->where('object_type', 'ilike', '%' . $value . '%');
     }
 
-        //  This is an alias function of objectType
+    //  This is an alias function of objectType
     public function object_type($value)
     {
         return $this->objectType($value);
     }
-    
+
     public function isSigned($value)
     {
         return $this->builder->where('is_signed', $value);
     }
 
-        //  This is an alias function of isSigned
+    //  This is an alias function of isSigned
     public function is_signed($value)
     {
         return $this->isSigned($value);
     }
-     
+
     public function createdAtStart($date)
     {
         return $this->builder->where('created_at', '>=', $date);
@@ -137,28 +138,23 @@ class ContractsQueryFilter extends AbstractQueryFilter
 
     public function iamUserId($value)
     {
-            $iamUser = \NextDeveloper\IAM\Database\Models\Users::where('uuid', $value)->first();
+        $iamUser = \NextDeveloper\IAM\Database\Models\Users::where('uuid', $value)->first();
 
-        if($iamUser) {
+        if ($iamUser) {
             return $this->builder->where('iam_user_id', '=', $iamUser->id);
         }
     }
 
-    
+
     public function iamAccountId($value)
     {
-            $iamAccount = \NextDeveloper\IAM\Database\Models\Accounts::where('uuid', $value)->first();
+        $iamAccount = \NextDeveloper\IAM\Database\Models\Accounts::withoutGlobalScope(AuthorizationScope::class)->where('uuid', $value)->first();
 
-        if($iamAccount) {
+        if ($iamAccount) {
             return $this->builder->where('iam_account_id', '=', $iamAccount->id);
         }
     }
 
-    
+
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
-
-
-
-
-
 }
