@@ -61,6 +61,9 @@ trait AgreementTemplateTestTraits
                 'name'  =>  'a',
                 'description'  =>  'a',
                 'reference'  =>  'a',
+                'class'  =>  'a',
+                'slug'  =>  'a',
+                'agreement_processor'  =>  'a',
                             ],
                 ['http_errors' => false]
             ]
@@ -387,6 +390,63 @@ trait AgreementTemplateTestTraits
             $request = new Request(
                 [
                 'reference'  =>  'a'
+                ]
+            );
+
+            $filter = new AgreementTemplateQueryFilter($request);
+
+            $model = \NextDeveloper\Agreement\Database\Models\AgreementTemplate::filter($filter)->first();
+        } catch (\Exception $e) {
+            $this->assertFalse(false, $e->getMessage());
+        }
+
+        $this->assertTrue(true);
+    }
+
+    public function test_agreementtemplate_event_class_filter()
+    {
+        try {
+            $request = new Request(
+                [
+                'class'  =>  'a'
+                ]
+            );
+
+            $filter = new AgreementTemplateQueryFilter($request);
+
+            $model = \NextDeveloper\Agreement\Database\Models\AgreementTemplate::filter($filter)->first();
+        } catch (\Exception $e) {
+            $this->assertFalse(false, $e->getMessage());
+        }
+
+        $this->assertTrue(true);
+    }
+
+    public function test_agreementtemplate_event_slug_filter()
+    {
+        try {
+            $request = new Request(
+                [
+                'slug'  =>  'a'
+                ]
+            );
+
+            $filter = new AgreementTemplateQueryFilter($request);
+
+            $model = \NextDeveloper\Agreement\Database\Models\AgreementTemplate::filter($filter)->first();
+        } catch (\Exception $e) {
+            $this->assertFalse(false, $e->getMessage());
+        }
+
+        $this->assertTrue(true);
+    }
+
+    public function test_agreementtemplate_event_agreement_processor_filter()
+    {
+        try {
+            $request = new Request(
+                [
+                'agreement_processor'  =>  'a'
                 ]
             );
 
