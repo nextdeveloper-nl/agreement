@@ -4,6 +4,7 @@ namespace NextDeveloper\Agreement\Services;
 
 use NextDeveloper\Agreement\Jobs\ProcessWebhookJob;
 use NextDeveloper\Agreement\Services\AbstractServices\AbstractWebhooksService;
+use NextDeveloper\IAM\Helpers\UserHelper;
 
 /**
  * This class is responsible from managing the data for Webhooks
@@ -22,13 +23,16 @@ class WebhooksService extends AbstractWebhooksService
      *
      * @param array $data
      * @return mixed
+     * @throws \Exception
      */
     public static function create(array $data)
     {
-        $data = parent::create($data);
-
+        $data = UserHelper::runAsAdmin(
+            function () use ($data) {
+                return parent::create($data);
+            }
+        );
         dispatch(new ProcessWebhookJob());
-
         return $data;
     }
 }

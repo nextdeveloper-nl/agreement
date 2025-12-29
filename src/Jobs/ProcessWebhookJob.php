@@ -5,15 +5,12 @@ namespace NextDeveloper\Agreement\Jobs;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use NextDeveloper\Agreement\Database\Models\Contracts;
 use NextDeveloper\Agreement\Database\Models\Webhooks;
-use NextDeveloper\Agreement\Services\SignatureService;
-use NextDeveloper\Commons\Services\MediaService;
 use NextDeveloper\IAM\Database\Scopes\AuthorizationScope;
 use NextDeveloper\IAM\Helpers\UserHelper;
 
@@ -52,6 +49,8 @@ class ProcessWebhookJob implements ShouldQueue
      */
     public function __construct()
     {
+
+        UserHelper::setAdminAsCurrentUser();
         $this->onQueue(self::QUEUE_NAME);
     }
 
@@ -74,25 +73,28 @@ class ProcessWebhookJob implements ShouldQueue
      */
     public function handle(): void
     {
+
+        UserHelper::setAdminAsCurrentUser();
+
         Log::info("[Agreement::ProcessWebhookJob] Starting webhook processing");
 
-        UserHelper::runAsAdmin(function () {
-            $webhooks = Webhooks::withoutGlobalScopes()
-                ->where('is_processed', false)
-                ->orderBy('created_at', 'asc')
-                ->get();
 
-            if ($webhooks->isEmpty()) {
-                Log::info("[Agreement::ProcessWebhookJob] No unprocessed webhooks found");
-                return;
-            }
+        $webhooks = Webhooks::withoutGlobalScopes()
+            ->where('is_processed', false)
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-            Log::info("[Agreement::ProcessWebhookJob] Found {$webhooks->count()} unprocessed webhook(s)");
+        if ($webhooks->isEmpty()) {
+            Log::info("[Agreement::ProcessWebhookJob] No unprocessed webhooks found");
+            return;
+        }
 
-            foreach ($webhooks as $webhook) {
-                $this->processWebhook($webhook);
-            }
-        });
+        Log::info("[Agreement::ProcessWebhookJob] Found {$webhooks->count()} unprocessed webhook(s)");
+
+        foreach ($webhooks as $webhook) {
+            $this->processWebhook($webhook);
+        }
+
 
         Log::info("[Agreement::ProcessWebhookJob] Webhook processing completed");
     }
@@ -186,6 +188,22 @@ class ProcessWebhookJob implements ShouldQueue
         }
 
         return true;
+    }
+
+    /**
+     * Mark the webhook as processed.
+     *
+     * @param Webhooks $webhook
+     * @param string|null $note Optional note about a processing result
+     * @return void
+     */
+    private function markWebhookAsProcessed(Webhooks $webhook, ?string $note = null): void
+    {
+        $webhook->update(['is_processed' => true]);
+
+        if ($note) {
+            Log::info("[Agreement::ProcessWebhookJob] Webhook {$webhook->id} marked as processed: {$note}");
+        }
     }
 
     /**
@@ -284,22 +302,5 @@ class ProcessWebhookJob implements ShouldQueue
             'side' => $side,
             'signer_name' => $signerInfo['fullName'] ?? 'unknown',
         ]);
-    }
-
-
-    /**
-     * Mark the webhook as processed.
-     *
-     * @param Webhooks $webhook
-     * @param string|null $note Optional note about a processing result
-     * @return void
-     */
-    private function markWebhookAsProcessed(Webhooks $webhook, ?string $note = null): void
-    {
-        $webhook->update(['is_processed' => true]);
-
-        if ($note) {
-            Log::info("[Agreement::ProcessWebhookJob] Webhook {$webhook->id} marked as processed: {$note}");
-        }
     }
 }
