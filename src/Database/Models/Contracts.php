@@ -10,6 +10,9 @@ use NextDeveloper\Agreement\Database\Observers\ContractsObserver;
 use NextDeveloper\Commons\Database\Traits\UuidId;
 use NextDeveloper\Commons\Common\Cache\Traits\CleanCache;
 use NextDeveloper\Commons\Database\Traits\Taggable;
+use NextDeveloper\Commons\Database\Traits\HasStates;
+use NextDeveloper\Commons\Database\Traits\HasObject;
+use NextDeveloper\Commons\Database\Traits\RunAsAdministrator;
 
 /**
  * Contracts model.
@@ -33,9 +36,8 @@ use NextDeveloper\Commons\Database\Traits\Taggable;
  */
 class Contracts extends Model
 {
-    use Filterable, UuidId, CleanCache, Taggable;
+    use Filterable, UuidId, CleanCache, Taggable, HasStates, RunAsAdministrator, HasObject;
     use SoftDeletes;
-
 
     public $timestamps = true;
 
@@ -125,7 +127,7 @@ class Contracts extends Model
         parent::boot();
 
         //  We create and add Observer even if we wont use it.
-        //parent::observe(ContractsObserver::class);
+        parent::observe(ContractsObserver::class);
 
         self::registerScopes();
     }
@@ -153,6 +155,8 @@ class Contracts extends Model
     }
 
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
+
+
 
 
 

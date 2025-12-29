@@ -16,6 +16,11 @@ class TemplatesUpdateRequest extends AbstractFormRequest
             'name' => 'nullable|string',
         'description' => 'nullable|string',
         'reference' => 'nullable|string',
+        'fields' => 'nullable',
+        'class' => 'nullable|string',
+        'parameters' => 'nullable',
+        'slug' => 'nullable|string',
+        'agreement_processor' => 'nullable|string',
         ];
     }
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE

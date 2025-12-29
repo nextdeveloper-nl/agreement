@@ -10,6 +10,9 @@ use NextDeveloper\Agreement\Database\Observers\WebhooksObserver;
 use NextDeveloper\Commons\Database\Traits\UuidId;
 use NextDeveloper\Commons\Common\Cache\Traits\CleanCache;
 use NextDeveloper\Commons\Database\Traits\Taggable;
+use NextDeveloper\Commons\Database\Traits\HasStates;
+use NextDeveloper\Commons\Database\Traits\HasObject;
+use NextDeveloper\Commons\Database\Traits\RunAsAdministrator;
 
 /**
  * Webhooks model.
@@ -26,9 +29,8 @@ use NextDeveloper\Commons\Database\Traits\Taggable;
  */
 class Webhooks extends Model
 {
-    use Filterable, UuidId, CleanCache, Taggable;
+    use Filterable, UuidId, CleanCache, Taggable, HasStates, RunAsAdministrator, HasObject;
     use SoftDeletes;
-
 
     public $timestamps = true;
 
@@ -106,7 +108,7 @@ class Webhooks extends Model
         parent::boot();
 
         //  We create and add Observer even if we wont use it.
-        //parent::observe(WebhooksObserver::class);
+        parent::observe(WebhooksObserver::class);
 
         self::registerScopes();
     }
@@ -134,4 +136,6 @@ class Webhooks extends Model
     }
 
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
+
+
 }

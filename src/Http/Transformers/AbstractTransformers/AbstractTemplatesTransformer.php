@@ -54,8 +54,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
      */
     public function transform(Templates $model)
     {
-                                                $iamUserId = \NextDeveloper\IAM\Database\Models\Users::where('id', $model->iam_user_id)->first();
-                                                            $iamAccountId = \NextDeveloper\IAM\Database\Models\Accounts::where('id', $model->iam_account_id)->first();
+                                                $iamAccountId = \NextDeveloper\IAM\Database\Models\Accounts::where('id', $model->iam_account_id)->first();
                         
         return $this->buildPayload(
             [
@@ -63,11 +62,15 @@ class AbstractTemplatesTransformer extends AbstractTransformer
             'name'  =>  $model->name,
             'description'  =>  $model->description,
             'reference'  =>  $model->reference,
-            'iam_user_id'  =>  $iamUserId ? $iamUserId->uuid : null,
-            'iam_account_id'  =>  $iamAccountId ? $iamAccountId->uuid : null,
+            'fields'  =>  $model->fields,
+            'class'  =>  $model->class,
+            'parameters'  =>  $model->parameters,
             'created_at'  =>  $model->created_at,
             'updated_at'  =>  $model->updated_at,
             'deleted_at'  =>  $model->deleted_at,
+            'slug'  =>  $model->slug,
+            'iam_account_id'  =>  $iamAccountId ? $iamAccountId->uuid : null,
+            'agreement_processor'  =>  $model->agreement_processor,
             ]
         );
     }
@@ -156,6 +159,8 @@ class AbstractTemplatesTransformer extends AbstractTransformer
         return $this->collection($addresses, new AddressesTransformer());
     }
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
+
+
 
 
 

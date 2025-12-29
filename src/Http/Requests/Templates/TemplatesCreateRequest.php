@@ -16,6 +16,11 @@ class TemplatesCreateRequest extends AbstractFormRequest
             'name' => 'required|string',
         'description' => 'required|string',
         'reference' => 'required|string',
+        'fields' => 'nullable',
+        'class' => 'nullable|string',
+        'parameters' => 'nullable',
+        'slug' => 'nullable|string',
+        'agreement_processor' => 'nullable|string',
         ];
     }
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE

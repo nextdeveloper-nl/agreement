@@ -10,13 +10,13 @@ use NextDeveloper\IAM\Authorization\Roles\IAuthorizationRole;
 use NextDeveloper\IAM\Database\Models\Users;
 
 
-class AgreementAdminRole extends AbstractRole implements IAuthorizationRole
+class AgreementUserRole extends AbstractRole implements IAuthorizationRole
 {
-    public const NAME = 'agreement-admin';
+    public const NAME = 'agreement-user';
 
-    public const LEVEL = 100;
+    public const LEVEL = 150;
 
-    public const DESCRIPTION = 'Agreement Admin';
+    public const DESCRIPTION = 'Agreement User';
 
     public const DB_PREFIX = 'agreement';
 

@@ -10,6 +10,9 @@ use NextDeveloper\Agreement\Database\Observers\TemplatesObserver;
 use NextDeveloper\Commons\Database\Traits\UuidId;
 use NextDeveloper\Commons\Common\Cache\Traits\CleanCache;
 use NextDeveloper\Commons\Database\Traits\Taggable;
+use NextDeveloper\Commons\Database\Traits\HasStates;
+use NextDeveloper\Commons\Database\Traits\HasObject;
+use NextDeveloper\Commons\Database\Traits\RunAsAdministrator;
 
 /**
  * Templates model.
@@ -20,17 +23,20 @@ use NextDeveloper\Commons\Database\Traits\Taggable;
  * @property string $name
  * @property string $description
  * @property string $reference
- * @property integer $iam_user_id
- * @property integer $iam_account_id
+ * @property $fields
+ * @property string $class
+ * @property $parameters
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @property string $slug
+ * @property integer $iam_account_id
+ * @property string $agreement_processor
  */
 class Templates extends Model
 {
-    use Filterable, UuidId, CleanCache, Taggable;
+    use Filterable, UuidId, CleanCache, Taggable, HasStates, RunAsAdministrator, HasObject;
     use SoftDeletes;
-
 
     public $timestamps = true;
 
@@ -46,8 +52,12 @@ class Templates extends Model
             'name',
             'description',
             'reference',
-            'iam_user_id',
+            'fields',
+            'class',
+            'parameters',
+            'slug',
             'iam_account_id',
+            'agreement_processor',
     ];
 
     /**
@@ -74,9 +84,14 @@ class Templates extends Model
     'name' => 'string',
     'description' => 'string',
     'reference' => 'string',
+    'fields' => 'array',
+    'class' => 'string',
+    'parameters' => 'array',
     'created_at' => 'datetime',
     'updated_at' => 'datetime',
     'deleted_at' => 'datetime',
+    'slug' => 'string',
+    'agreement_processor' => 'string',
     ];
 
     /**
@@ -110,7 +125,7 @@ class Templates extends Model
         parent::boot();
 
         //  We create and add Observer even if we wont use it.
-        //parent::observe(TemplatesObserver::class);
+        parent::observe(TemplatesObserver::class);
 
         self::registerScopes();
     }
@@ -137,7 +152,14 @@ class Templates extends Model
         }
     }
 
+    public function accounts() : \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\NextDeveloper\IAM\Database\Models\Accounts::class);
+    }
+    
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
+
+
 
 
 
