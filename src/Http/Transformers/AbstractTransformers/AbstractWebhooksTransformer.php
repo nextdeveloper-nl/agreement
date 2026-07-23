@@ -54,7 +54,7 @@ class AbstractWebhooksTransformer extends AbstractTransformer
      */
     public function transform(Webhooks $model)
     {
-            
+
         return $this->buildPayload(
             [
             'id'  =>  $model->uuid,

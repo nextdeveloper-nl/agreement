@@ -17,13 +17,13 @@ class WebhooksQueryFilter extends AbstractQueryFilter
      * @var Builder
      */
     protected $builder;
-    
+
     public function source($value)
     {
         return $this->builder->where('source', 'ilike', '%' . $value . '%');
     }
 
-    
+
     public function isProcessed($value)
     {
         return $this->builder->where('is_processed', $value);
@@ -34,7 +34,7 @@ class WebhooksQueryFilter extends AbstractQueryFilter
     {
         return $this->isProcessed($value);
     }
-     
+
     public function createdAtStart($date)
     {
         return $this->builder->where('created_at', '>=', $date);

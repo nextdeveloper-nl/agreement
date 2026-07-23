@@ -55,7 +55,7 @@ class AbstractTemplatesTransformer extends AbstractTransformer
     public function transform(Templates $model)
     {
                                                 $iamAccountId = \NextDeveloper\IAM\Database\Models\Accounts::where('id', $model->iam_account_id)->first();
-                        
+
         return $this->buildPayload(
             [
             'id'  =>  $model->uuid,

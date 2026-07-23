@@ -25,7 +25,7 @@ class AgreementAdminRole extends AbstractRole implements IAuthorizationRole
         //  Returns everything about agreement
     }
 
-    public function checkPrivileges(Users $users = null)
+    public function checkPrivileges(?Users $users = null)
     {
         //return UserHelper::hasRole(self::NAME, $users);
     }

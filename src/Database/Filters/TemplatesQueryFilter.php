@@ -17,37 +17,37 @@ class TemplatesQueryFilter extends AbstractQueryFilter
      * @var Builder
      */
     protected $builder;
-    
+
     public function name($value)
     {
         return $this->builder->where('name', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function description($value)
     {
         return $this->builder->where('description', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function reference($value)
     {
         return $this->builder->where('reference', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function class($value)
     {
         return $this->builder->where('class', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function slug($value)
     {
         return $this->builder->where('slug', 'ilike', '%' . $value . '%');
     }
 
-        
+
     public function agreementProcessor($value)
     {
         return $this->builder->where('agreement_processor', 'ilike', '%' . $value . '%');
@@ -58,7 +58,7 @@ class TemplatesQueryFilter extends AbstractQueryFilter
     {
         return $this->agreementProcessor($value);
     }
-    
+
     public function createdAtStart($date)
     {
         return $this->builder->where('created_at', '>=', $date);
@@ -134,7 +134,7 @@ class TemplatesQueryFilter extends AbstractQueryFilter
         }
     }
 
-    
+
     // EDIT AFTER HERE - WARNING: ABOVE THIS LINE MAY BE REGENERATED AND YOU MAY LOSE CODE
 
 
