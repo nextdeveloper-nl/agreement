@@ -54,6 +54,45 @@ class AgreementUserRole extends AbstractRole implements IAuthorizationRole
         $builder->whereRaw('1 = 0');
     }
 
+    /**
+     * Shared templates (no owner) are readable by every agreement-user, but only the owning account may write them.
+     * A template can never be created for, or moved to, another account (or to "no owner").
+     */
+    private function ownsTemplate(Model $model): bool
+    {
+        $accountId = (int) UserHelper::currentAccount()->id;
+
+        return (int) $model->getOriginal('iam_account_id', $model->iam_account_id) === $accountId
+            && (int) $model->iam_account_id === $accountId;
+    }
+
+    public function checkCreatePolicy(Users $user, Model $model): bool
+    {
+        if ($model->getTable() == 'agreement_templates' && (int) $model->iam_account_id !== (int) UserHelper::currentAccount()->id) {
+            return false;
+        }
+
+        return parent::checkCreatePolicy($user, $model);
+    }
+
+    public function checkUpdatePolicy(Model $model, Users $user): bool
+    {
+        if ($model->getTable() == 'agreement_templates' && ! $this->ownsTemplate($model)) {
+            return false;
+        }
+
+        return parent::checkUpdatePolicy($model, $user);
+    }
+
+    public function checkDeletePolicy(Model $model, Users $user): bool
+    {
+        if ($model->getTable() == 'agreement_templates' && ! $this->ownsTemplate($model)) {
+            return false;
+        }
+
+        return parent::checkDeletePolicy($model, $user);
+    }
+
     public function checkPrivileges(?Users $users = null)
     {
         //return UserHelper::hasRole(self::NAME, $users);
